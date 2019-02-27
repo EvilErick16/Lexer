@@ -3,6 +3,7 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::cerr;
 
 #include <fstream>
 using std::ifstream;
@@ -14,27 +15,41 @@ using std::string;
 using std::vector;
 
 #include <sstream>
+#include "state_machine.cpp"
 
 
 int main()
 {
-	// Read each line from the source_code file 
+	// Read each line from the source_code.txt file and store it in a vector of strings  
 	string line;
 	vector<string> codeArray;
-	ifstream sourceCode;			
+	ifstream sourceCode; 
 	sourceCode.open("source_code.txt");
-
 	if (sourceCode.is_open()) {
 		while (getline(sourceCode, line)) {
 			codeArray.push_back(line);
-			cout << codeArray.back() << endl;
 		}
-	}
+	}	 
+	else
+		cerr << "Could not open source code file!\n";
 
 	sourceCode.close();
 
-	system("pause");
 
+
+	for (int i = 0; i < codeArray[0].length(); i++ ) {
+		//cout << codeArray[0][i] << endl;
+	}
+	//cout << codeArray.size() << endl;
+
+
+	StateMachine FSM;
+	const State *ptr;
+	ptr = FSM.getFinalStates();
+
+	cout << ptr[0] << ", " << ptr[1] << ", " << ptr[2] << ", " << ptr[3] << endl;
+
+	system("pause");
 
 	return 0;
 }
