@@ -43,13 +43,12 @@ class StateMachine {
 private:
 
 	//private variables for the State Machine class 
-	int curr_state;		
-	int new_state;
-	const State final_states[4] = { END_OF_IDENTIFIER, END_OF_NUMBER, END_OF_COMMENT, SYMBOLS };
+	const int final_states[4] = { END_OF_IDENTIFIER, END_OF_NUMBER, END_OF_COMMENT, SYMBOLS };
 	int state_transition_table[9][8];
 
 
 public:
+
 	// StateMacine constructor initializes the State_transition_table
 	StateMachine() {
 
@@ -61,26 +60,47 @@ public:
 		if (table.is_open()) {
 			while (getline(table, value)) {
 				vals.push_back(value);
-				//std::cout << value << std::endl;
 			}
 		}
 		else
 			cerr << "Could not open transition_table.txt\n";
 
+		//assign the values from the temporary vector to the state_transition_table array 
 		for (int state = 0, vect_val = 0; state < 9; state++) {
 			for (int input = 0; input < 8; input++) {
 				state_transition_table[state][input] = std::stoi(vals[vect_val]);
 				vect_val++;
-				std::cout << state_transition_table[state][input] << "  ";
 			}
-			std::cout << "\n";
-		}
+		}	
 
-		
+		// initialize current state and new state 
 	}
+
+	// function to calculate the next state based on the current state and input
+	int check_input(int state, int input) {
+		return state_transition_table[state][input];
+	}
+
+	// function that returns true if the lexer should back up 
+	bool should_back_up(int curr_state) {
+		if (state_transition_table[curr_state][BACKUP] == 1)
+			return 1;
+		else
+			return 0;
+	}
+
+	bool is_final_state(int curr_state) {
+		for (int i = 0; i < 4; i++) {
+			if (curr_state == final_states[i])
+				return 1;
+			else
+				return 0;
+		}
+	}
+
 	// function returns a const pointer to the first element of the final states array;
-	const State * getFinalStates() {
-		const State * ptr = final_states;
+	const int * getFinalStates() {
+		const int * ptr = final_states;
 		return ptr;
 	};
 
