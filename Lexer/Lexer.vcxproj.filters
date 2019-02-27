@@ -26,5 +26,8 @@
     <Text Include="source_code.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="transition_table.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

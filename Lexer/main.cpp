@@ -31,7 +31,7 @@ int main()
 		}
 	}	 
 	else
-		cerr << "Could not open source code file!\n";
+		cerr << "Could not open source_code.txt\n";
 
 	sourceCode.close();
 
@@ -44,10 +44,7 @@ int main()
 
 
 	StateMachine FSM;
-	const State *ptr;
-	ptr = FSM.getFinalStates();
 
-	cout << ptr[0] << ", " << ptr[1] << ", " << ptr[2] << ", " << ptr[3] << endl;
 
 	system("pause");
 
