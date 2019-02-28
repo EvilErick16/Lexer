@@ -1,6 +1,5 @@
 //This file defines the State Machine class 
 
-// used to read from the transition_table.txt file 
 #include <fstream>
 using std::ifstream;
 #include <iostream>
@@ -10,8 +9,9 @@ using std::string;
 #include <vector>
 using std::vector;
 
-
-// create enumerated data types to access the array containing the Sate Trasition table 
+////////////////////////////////////////////////////////////////////////////////////////////
+// create enumerated data types to access the array containing the Sate Trasition table	  //
+////////////////////////////////////////////////////////////////////////////////////////////
 enum State {
 	STARTING_STATE,				// 0
 	IN_IDENTIFIER,				// 1
@@ -36,22 +36,32 @@ enum Input {
 };
 
 
-//State machine class definition 
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+//	State machine class definition                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
 class StateMachine {
 
 
 private:
 
-	//private variables for the State Machine class 
+	////////////////////////////////////////////////////////////////////////////////////////
+	// private variables for the State Machine class									  //
+	////////////////////////////////////////////////////////////////////////////////////////
+	const int NUM_OF_STATES = 9;
+	const int NUM_OF_INPUTS = 8;
+	const int NUM_OF_FINAL_STATES = 4;
 	const int final_states[4] = { END_OF_IDENTIFIER, END_OF_NUMBER, END_OF_COMMENT, SYMBOLS };
 	int state_transition_table[9][8];
 
 
 public:
 
-	// StateMacine constructor initializes the State_transition_table
+	////////////////////////////////////////////////////////////////////////////////////////
+	// StateMacine constructor initializes the State_transition_table                     //
+	////////////////////////////////////////////////////////////////////////////////////////
 	StateMachine() {
-
 		// open text file to get values inside State transition table
 		vector<string> vals;
 		ifstream table;
@@ -66,22 +76,26 @@ public:
 			cerr << "Could not open transition_table.txt\n";
 
 		//assign the values from the temporary vector to the state_transition_table array 
-		for (int state = 0, vect_val = 0; state < 9; state++) {
-			for (int input = 0; input < 8; input++) {
+		for (int state = 0, vect_val = 0; state < NUM_OF_STATES; state++) {
+			for (int input = 0; input < NUM_OF_INPUTS; input++) {
 				state_transition_table[state][input] = std::stoi(vals[vect_val]);
 				vect_val++;
 			}
-		}	
-
-		// initialize current state and new state 
+		}
 	}
 
-	// function to calculate the next state based on the current state and input
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// function to calculate the next state based on the current state and input          //
+	////////////////////////////////////////////////////////////////////////////////////////
 	int check_input(int state, int input) {
 		return state_transition_table[state][input];
 	}
 
-	// function that returns true if the lexer should back up 
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// function that returns true if the lexer should back up							  //
+	////////////////////////////////////////////////////////////////////////////////////////
 	bool should_back_up(int curr_state) {
 		if (state_transition_table[curr_state][BACKUP] == 1)
 			return 1;
@@ -89,26 +103,35 @@ public:
 			return 0;
 	}
 
-	// function checks if state is a final state
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	///// function returns a const pointer to the first element of the final states array //
+	////////////////////////////////////////////////////////////////////////////////////////
+	const int * getFinalStates() {
+		const int * ptr = final_states;
+		return ptr;
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// function that takes the source code char and converts it to an input for the table //
+	////////////////////////////////////////////////////////////////////////////////////////
+	int char_to_input(char code) {
+		if (isalpha(code))
+			return LETTER;
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// function checks if current state is a final state								  //
+	////////////////////////////////////////////////////////////////////////////////////////
 	bool is_final_state(int curr_state) {
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < NUM_OF_FINAL_STATES; i++) {
 			if (curr_state == final_states[i])
 				return 1;
 			else
 				return 0;
 		}
-	}
-
-	// function returns a const pointer to the first element of the final states array;
-	const int * getFinalStates() {
-		const int * ptr = final_states;
-		return ptr;
-	};
-
-	// function that takes the source code char and converts it to an input for the table 
-	int char_to_input(char code) {
-		if (isalpha(code))
-			return LETTER;
 	}
 
 };
