@@ -45,6 +45,8 @@ int main()
 
 	StateMachine FSM;
 
+	cout << FSM.char_to_input(codeArray[0][0]) << " = 0\n";
+
 
 	system("pause");
 

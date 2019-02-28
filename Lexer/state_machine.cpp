@@ -89,6 +89,7 @@ public:
 			return 0;
 	}
 
+	// function checks if state is a final state
 	bool is_final_state(int curr_state) {
 		for (int i = 0; i < 4; i++) {
 			if (curr_state == final_states[i])
@@ -104,5 +105,10 @@ public:
 		return ptr;
 	};
 
+	// function that takes the source code char and converts it to an input for the table 
+	int char_to_input(char code) {
+		if (isalpha(code))
+			return LETTER;
+	}
 
 };
