@@ -47,7 +47,7 @@ class StateMachine {
 private:
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// private variables for the State Machine class									  //
+	// private variables for the State Machine class
 	////////////////////////////////////////////////////////////////////////////////////////
 	const int NUM_OF_STATES = 9;
 	const int NUM_OF_INPUTS = 8;
@@ -59,8 +59,22 @@ private:
 public:
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// StateMacine constructor initializes the State_transition_table                     //
+	// StateMacine constructor initializes the state_transition_table from external file
 	////////////////////////////////////////////////////////////////////////////////////////
+	/*
+	STATES				INPUTS
+						L	D	SP	!	$	.	OTHER	BACKUP(not input, some final states must back up)
+	0 StartingState		1	3	0	6	8	4	8		0
+	1 InIdentifier		1	1	2	2	1	2	2		0
+	2 EndOfIdentifier	0	0	0	0	0	0	0		1	final state
+	3 InNumber			5	3	5	5	5	4	5		0
+	4 InFloat			5	4	5	5	5	5	5		0
+	5 EndOfNUmber		0	0	0	0	0	0	0		1	final state
+	6 InComment			6	6	6	7	6	6	6		0
+	7 EndOfComment		0	0	0	0	0	0	0		0	final state
+	8 Symbol			0	0	0	0	0	0	0		0	final state
+	*/
+
 	StateMachine() {
 		// open text file to get values inside State transition table
 		vector<string> vals;
@@ -86,7 +100,7 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// function to calculate the next state based on the current state and input          //
+	// function to calculate the next state based on the current state and input
 	////////////////////////////////////////////////////////////////////////////////////////
 	int check_input(int state, int input) {
 		return state_transition_table[state][input];
@@ -94,7 +108,7 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// function that returns true if the lexer should back up							  //
+	// function that returns true if the lexer should back up
 	////////////////////////////////////////////////////////////////////////////////////////
 	bool should_back_up(int curr_state) {
 		if (state_transition_table[curr_state][BACKUP] == 1)
@@ -105,23 +119,7 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	///// Function returns the type of the final state  //
-	////////////////////////////////////////////////////////////////////////////////////////
-	string getFinalState(int state) {
-		
-		if (state == END_OF_IDENTIFIER)
-			return "Identifier";
-		else if (state == END_OF_NUMBER)
-			return "Number";
-		else if (state == END_OF_COMMENT)
-			return "Comment";
-		else if (state == SYMBOLS)
-			return "Symbol";
-	}
-
-
-	////////////////////////////////////////////////////////////////////////////////////////
-	//	Function returns the name of the token based on the state
+	//	Function returns the name of the token based on the state and lexeme
 	///////////////////////////////////////////////////////////////////////////////////////
 	string getTokenName(int state, string lexeme) {
 
@@ -155,7 +153,7 @@ public:
 				return "SEPARATOR";
 			}
 			else
-				return "SPACE";
+				return "OTHER";
 		}
 		else
 			return "ERROR";
@@ -163,7 +161,7 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// function that takes the source code char and converts it to an input for the table //
+	// function that takes the source code char and converts it to an input for the table
 	////////////////////////////////////////////////////////////////////////////////////////
 	int char_to_input(char code) {
 		if (isalpha(code))
@@ -184,7 +182,7 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// function checks if current state is a final state								  //
+	// function checks if current state is a final state
 	////////////////////////////////////////////////////////////////////////////////////////
 	bool is_final_state(int curr_state) {
 		for (int i = 0; i < NUM_OF_FINAL_STATES; i++) {

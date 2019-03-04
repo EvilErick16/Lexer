@@ -8,6 +8,7 @@ using std::cin;
 
 #include <fstream>
 using std::ifstream;
+using std::ofstream;
 
 #include <string>
 using std::string;
@@ -18,13 +19,20 @@ using std::vector;
 #include <algorithm>
 using std::all_of;
 
-#include <sstream>
+#include <iomanip>
+using std::setw;
+using std::right;
+using std::left;
+
 #include "state_machine.cpp"
 
 
 int main()
 {
 	 
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	//	Read the source code file into a buffer 
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 	string line;
 	vector<string> codeArray;
 	ifstream sourceCode; 
@@ -46,31 +54,36 @@ int main()
 
 	sourceCode.close();
 
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	//	Iterate through the buffer looking for Tokens and their corresponding lexemes 
+	///////////////////////////////////////////////////////////////////////////////////////////////
 	vector<string> lexemes;
 	vector<string> tokens;
 	StateMachine FSM;
 	int curr_state = 0;
 	int lexeme_start = 0;
 
-	// For every character in the vector 
+	cout << "--------------------------------" << endl;
+	cout << left << setw(15) << "TOKENS" << setw(10) << "" << "Lexemes" << endl;
+	cout << "--------------------------------" << endl << endl;
+
+	// Iterate through every character in the codeArray vector 
 	for (int line = 0; line < codeArray.size(); line++) {
 		for (int char_ = 0; char_ <= codeArray[line].length(); char_++) {
 
-			// If this is the begining of a token, set the variable
+			// If this char is the begining of a token, set the variable
 			if (curr_state == 0) {
 				lexeme_start = char_;
 			}
 
-			// Get the next input 
+			// Get the next input, transform the char into an int 
 			int curr_input = FSM.char_to_input(codeArray[line][char_]);
 
-			// Find the next state 
+			// Find the next state based on the current state and current input
 			curr_state = FSM.check_input(curr_state, curr_input);
 
-			// If this is a final state for a token 
+			// Check if the new state is a final state for a token 
 			if (FSM.is_final_state(curr_state)) {
-
-				//cout << " Final State: " << curr_state << endl;
 				
 				// If the state machine shold back up, back up 
 				if (FSM.should_back_up(curr_state)) {
@@ -84,14 +97,14 @@ int main()
 						lex += codeArray[line][i];
 					}
 					// If the token is a whitespace, ignore it 
-					if (FSM.getTokenName(curr_state, lex) != "SPACE") {
+					if (FSM.getTokenName(curr_state, lex) != "OTHER") {
+						// Add the found token and lexeme to their respective vectors
 						tokens.push_back(FSM.getTokenName(curr_state, lex));
 						lexemes.push_back(lex);
-						cout << tokens.back() << "			" << lexemes.back() << endl;
+						cout << left << setw(15) << tokens.back() <<
+							setw(10) << "->" << lexemes.back() << endl;
 					}
-				}
-				
-				
+				}				
 
 				// Set the current state to begining state
 				curr_state = 0;
@@ -99,7 +112,21 @@ int main()
 			}
 		}
 
-	system("pause");
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Output Tokens and Lexemes to a file
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	ofstream out("output.txt");
+	out << "--------------------------------" << endl;
+	out << left << setw(15) << "TOKENS" << setw(10) << "" << "Lexemes" << endl;
+	out << "--------------------------------" << endl << endl;
+	vector<string>::iterator tok;
+	vector<string>::iterator lex;
+	for (tok = tokens.begin(), lex = lexemes.begin(); tok != tokens.end(); tok++, lex++)
+	{
+		out << left << setw(15) << *tok <<
+			setw(10) << "->" << *lex << endl;
+	}
+	out.close();
 
 	return 0;
 }

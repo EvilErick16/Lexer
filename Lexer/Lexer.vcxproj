@@ -146,6 +146,7 @@
     <ClCompile Include="state_machine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="output.txt" />
     <Text Include="source_code.txt" />
     <Text Include="source_code_2.txt" />
     <Text Include="transition_table.txt" />
