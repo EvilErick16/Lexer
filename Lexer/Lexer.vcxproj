@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="source_code.txt" />
+    <Text Include="source_code_2.txt" />
     <Text Include="transition_table.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

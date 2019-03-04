@@ -105,11 +105,60 @@ public:
 
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	///// function returns a const pointer to the first element of the final states array //
+	///// Function returns the type of the final state  //
 	////////////////////////////////////////////////////////////////////////////////////////
-	const int * getFinalStates() {
-		const int * ptr = final_states;
-		return ptr;
+	string getFinalState(int state) {
+		
+		if (state == END_OF_IDENTIFIER)
+			return "Identifier";
+		else if (state == END_OF_NUMBER)
+			return "Number";
+		else if (state == END_OF_COMMENT)
+			return "Comment";
+		else if (state == SYMBOLS)
+			return "Symbol";
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	//	Function returns the name of the token based on the state
+	///////////////////////////////////////////////////////////////////////////////////////
+	string getTokenName(int state, string lexeme) {
+
+		if (state == END_OF_IDENTIFIER) {
+			if (lexeme == "int" || lexeme == "float" || lexeme == "bool" || lexeme == "if" || lexeme == "else" ||
+				lexeme == "then" || lexeme == "do" || lexeme == "while" || lexeme == "whileend" || lexeme == "do" ||
+				lexeme == "doend" || lexeme == "for" || lexeme == "and" || lexeme == "or" || lexeme == "function") {
+				return "KEYWORD";
+			}
+			else {
+				return "IDENTIFIER";
+			}
+		}
+
+		else if (state == END_OF_NUMBER) {
+			return "NUMBER";
+		}
+
+		else if (state == END_OF_COMMENT) {
+			return "COMMENT";
+		}
+
+		else if (state == SYMBOLS) {
+			if (lexeme == "*" || lexeme == "+" || lexeme == "-" || lexeme == "=" || lexeme == "/" ||
+				lexeme == ">" || lexeme == "<" || lexeme == "%") {
+				return "OPERATOR";
+			}
+			else if (lexeme == "'" || lexeme == "(" || lexeme == ")" || lexeme == "{" || lexeme == "}" ||
+				lexeme == "[" || lexeme == "]" || lexeme == "," || lexeme == "." || lexeme == ":" || lexeme == ";" ||
+				lexeme == "!") {
+				return "SEPARATOR";
+			}
+			else
+				return "SPACE";
+		}
+		else
+			return "ERROR";
 	}
 
 
@@ -119,6 +168,18 @@ public:
 	int char_to_input(char code) {
 		if (isalpha(code))
 			return LETTER;
+		else if (isdigit(code))
+			return DIGIT;
+		else if (isspace(code))
+			return SPACE;
+		else if (code == '!')
+			return EXCLAMATION;
+		else if (code == '$')
+			return DOLLAR_SIGN;
+		else if (code == '.')
+			return PERIOD;
+		else
+			return OTHER;
 	}
 
 
@@ -129,9 +190,8 @@ public:
 		for (int i = 0; i < NUM_OF_FINAL_STATES; i++) {
 			if (curr_state == final_states[i])
 				return 1;
-			else
-				return 0;
 		}
+		return 0;
 	}
 
 };
