@@ -6,8 +6,7 @@ Lexical Analyzer using Finite State Machine concept
 	
 	Syntax analyzer that inplements the assignment expression 
 
-	Input: a vector of token objects that contains tokens and lexemes
-		already parsed 
+	Input: a source code file  
 
 	Output: a file that contains three things; Tokens, Lexemes, and
 			Production Rules if grammar is accepted, or Error if grammar
@@ -17,7 +16,7 @@ Lexical Analyzer using Finite State Machine concept
 
 	- Unzip 'syntax_analyzer.zip' and simply run 'Lexer.exe' OR clone github repository and run visual studio solution. 
 		
-	- Compiled .exe file runs in a wondows 10 environment 
+	- Compiled .exe file runs in a windows 10 environment 
 	
 	- 'Lexer.exe' file must be in the same folder as the source code file that is being tested. ('test.txt' is included)
 		
