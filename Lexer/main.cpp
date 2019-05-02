@@ -40,8 +40,10 @@ int main()
 			codeArray.push_back(line);
 		}
 	}	 
-	else
+	else {
 		cerr << "Could not open " << file_name << endl;
+		return -1;
+	}
 
 	sourceCode.close();
 
@@ -90,8 +92,8 @@ int main()
 					if (FSM.getTokenName(curr_state, lex) != "OTHER") {
 						// Add the found token and lexeme to their respective vectors
 						token_lexeme.push_back(tokens(FSM.getTokenName(curr_state, lex), lex));
-						cout << left << setw(15) << token_lexeme.back().token <<
-							setw(10) << " " << token_lexeme.back().lexeme << endl;
+						//cout << left << setw(15) << token_lexeme.back().token <<
+							//setw(10) << " " << token_lexeme.back().lexeme << endl;
 					}
 				}				
 
@@ -112,13 +114,19 @@ int main()
 	{
 		out << left << setw(15) << token_lexeme[i].token <<
 			setw(10) << " " << token_lexeme[i].lexeme << endl;
+		cout << left << setw(15) << token_lexeme[i].token <<
+			setw(10) << " " << token_lexeme[i].lexeme << endl;
 	}
 
 	// Check if the syntax is accepted
 	if (!analyze_syntax(token_lexeme, 0, out)) {
+		cout << "Syntax error" << endl;
 		out << "ERROR: syntax error found in the source code" << endl;
 	}
+
+	// Close output file 
 	out.close();
 
+	// End main 
 	return 0;
 }

@@ -26,4 +26,8 @@ IDENTIFIER               g
 OPERATOR                 *
 IDENTIFIER               n
 SEPARATOR                ;
-ERROR: syntax error found in the source code
+ <statement> -> <assign>
+ <assign> -> <identifier><identifier>
+<identifier>
+<identifier>
+<identifier>

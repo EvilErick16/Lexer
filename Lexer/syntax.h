@@ -6,6 +6,7 @@ using std::vector;
 using std::string;
 #include <fstream>
 using std::ofstream;
+using std::ifstream;
 
 
 
@@ -30,8 +31,8 @@ bool analyze_syntax(vector<tokens>, int, ofstream&);
 // Function is a production rule that checks for assignment operation 
 bool S(vector<tokens> token_vect, int index, ofstream& output_file) {
 
-	if (token_vect[index].lexeme == "identifier") {
-		if (token_vect.size() > index + 1 && token_vect[index + 1].token == "=") {
+	if (token_vect[index].token == "IDENTIFIER") {
+		if (token_vect.size() > index + 1 && token_vect[index + 1].lexeme == "=") {
 			output_file << " <statement> -> <assign>\n <assign> -> <identifier>";
 			if (E(token_vect, index + 2, output_file)) {
 				output_file << " <expression>\n";
@@ -56,7 +57,7 @@ bool E(vector<tokens> token_vect, int index, ofstream& output_file) {
 
 // Third production rule 
 bool Q(vector<tokens> token_vect, int index, ofstream& output_file) {
-	if (token_vect[index].token == "+") {
+	if (token_vect[index].lexeme == "+") {
 		output_file << "+";
 		if (index + 1 < token_vect.size() && T(token_vect, index + 1, output_file)) {
 			output_file << "<term>";
@@ -66,7 +67,7 @@ bool Q(vector<tokens> token_vect, int index, ofstream& output_file) {
 			}
 		}
 	}
-	else if (token_vect[index].token == "-") {
+	else if (token_vect[index].lexeme == "-") {
 		output_file << "-";
 		if (index + 1 < token_vect.size() && T(token_vect, index + 1, output_file)) {
 			output_file << "<term>";
@@ -98,7 +99,7 @@ bool T(vector<tokens> token_vect, int index, ofstream& output_file) {
 
 // Fifth production rule 
 bool R(vector<tokens> token_vec, int index, ofstream& output_file) {
-	if (token_vec[index].token == "*") {
+	if (token_vec[index].lexeme == "*") {
 		output_file << "*";
 		if (index + 1 < token_vec.size() && F(token_vec, index + 1, output_file)) {
 			output_file << "<factor>";
@@ -108,7 +109,7 @@ bool R(vector<tokens> token_vec, int index, ofstream& output_file) {
 			}
 		}
 	}
-	else if (token_vec[index].token == "/") {
+	else if (token_vec[index].lexeme == "/") {
 		if (index + 1 < token_vec.size() && F(token_vec, index + 1, output_file)) {
 			output_file << "<factor>";
 			if (index + 2 < token_vec.size() && R(token_vec, index + 2, output_file)) {
@@ -128,7 +129,7 @@ bool R(vector<tokens> token_vec, int index, ofstream& output_file) {
 
 // Sixth production rule
 bool F(vector<tokens> token_vec, int index, ofstream& output_file) {
-	if (token_vec[index].token == "(") {
+	if (token_vec[index].lexeme == "(") {
 		if (index + 1 < token_vec.size() && E(token_vec, index + 1, output_file)) {
 			if (index + 2 < token_vec.size() && E(token_vec, index + 2, output_file)) {
 				output_file << "( <expression> )\n";
@@ -136,7 +137,7 @@ bool F(vector<tokens> token_vec, int index, ofstream& output_file) {
 			}
 		}
 	}
-	else if (token_vec[index].lexeme == "identifier") {
+	else if (token_vec[index].token == "IDENTIFIER") {
 		output_file << "<identifier>\n";
 		return true;
 	}
