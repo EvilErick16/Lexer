@@ -18,22 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="state_machine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="source_code.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="transition_table.txt">
-      <Filter>Source Files</Filter>
-    </Text>
-    <Text Include="source_code_2.txt">
-      <Filter>Source Files</Filter>
-    </Text>
     <Text Include="output.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="test.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="syntax.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="state_machine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

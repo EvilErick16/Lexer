@@ -1,3 +1,5 @@
+#pragma once
+
 //This file defines the State Machine class 
 
 #include <fstream>
@@ -53,17 +55,22 @@ private:
 	const int NUM_OF_INPUTS = 8;
 	const int NUM_OF_FINAL_STATES = 4;
 	const int final_states[4] = { END_OF_IDENTIFIER, END_OF_NUMBER, END_OF_COMMENT, SYMBOLS };
-	int state_transition_table[9][8];
-
-
-public:
-
-	////////////////////////////////////////////////////////////////////////////////////////
-	// StateMacine constructor initializes the state_transition_table from external file
-	////////////////////////////////////////////////////////////////////////////////////////
+	int state_transition_table[9][8] =
+	{
+		{ 1, 3, 0, 6, 8, 4, 8, 0 },
+		{ 1, 1, 2, 2, 1, 2, 2, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 1 },
+		{ 5, 3, 5, 5, 5, 4, 5, 0 },
+		{ 5, 4, 5, 5, 5, 5, 5, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 1 },
+		{ 6, 6, 6, 7, 6, 6, 6, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0 }
+	};
+	// state_transition_table
 	/*
 	STATES				INPUTS
-						L	D	SP	!	$	.	OTHER	BACKUP(not input, some final states must back up)
+	--------------------L	D	SP	!	$	.	OTHER	BACKUP(not input, some final states must back up)
 	0 StartingState		1	3	0	6	8	4	8		0
 	1 InIdentifier		1	1	2	2	1	2	2		0
 	2 EndOfIdentifier	0	0	0	0	0	0	0		1	final state
@@ -75,29 +82,8 @@ public:
 	8 Symbol			0	0	0	0	0	0	0		0	final state
 	*/
 
-	StateMachine() {
-		// open text file to get values inside State transition table
-		vector<string> vals;
-		ifstream table;
-		string value;
-		table.open("transition_table.txt");
-		if (table.is_open()) {
-			while (getline(table, value)) {
-				vals.push_back(value);
-			}
-		}
-		else
-			cerr << "Could not open transition_table.txt\n";
 
-		//assign the values from the temporary vector to the state_transition_table array 
-		for (int state = 0, vect_val = 0; state < NUM_OF_STATES; state++) {
-			for (int input = 0; input < NUM_OF_INPUTS; input++) {
-				state_transition_table[state][input] = std::stoi(vals[vect_val]);
-				vect_val++;
-			}
-		}
-	}
-
+public:
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// function to calculate the next state based on the current state and input
@@ -144,7 +130,7 @@ public:
 
 		else if (state == SYMBOLS) {
 			if (lexeme == "*" || lexeme == "+" || lexeme == "-" || lexeme == "=" || lexeme == "/" ||
-				lexeme == ">" || lexeme == "<" || lexeme == "%") {
+				lexeme == ">" || lexeme == "<" /*|| lexeme == "%"*/) {
 				return "OPERATOR";
 			}
 			else if (lexeme == "'" || lexeme == "(" || lexeme == ")" || lexeme == "{" || lexeme == "}" ||

@@ -143,13 +143,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="state_machine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="output.txt" />
     <Text Include="source_code.txt" />
-    <Text Include="source_code_2.txt" />
-    <Text Include="transition_table.txt" />
+    <Text Include="test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="state_machine.h" />
+    <ClInclude Include="syntax.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

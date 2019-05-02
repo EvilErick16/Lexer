@@ -2,96 +2,28 @@
 TOKENS                   Lexemes
 --------------------------------
 
-KEYWORD        ->        function
-IDENTIFIER     ->        areaofcircle$
-SEPARATOR      ->        [
-IDENTIFIER     ->        radius
-SEPARATOR      ->        :
-KEYWORD        ->        float
-SEPARATOR      ->        ]
-SEPARATOR      ->        {
-KEYWORD        ->        float
-IDENTIFIER     ->        pi
-OPERATOR       ->        =
-NUMBER         ->        3.14
-SEPARATOR      ->        ;
-IDENTIFIER     ->        return
-SEPARATOR      ->        (
-IDENTIFIER     ->        pi
-OPERATOR       ->        *
-SEPARATOR      ->        (
-IDENTIFIER     ->        radius
-OPERATOR       ->        *
-IDENTIFIER     ->        radius
-SEPARATOR      ->        )
-SEPARATOR      ->        )
-SEPARATOR      ->        ;
-SEPARATOR      ->        }
-KEYWORD        ->        function
-IDENTIFIER     ->        areawithdiameter
-SEPARATOR      ->        [
-IDENTIFIER     ->        diameter
-SEPARATOR      ->        :
-KEYWORD        ->        float
-SEPARATOR      ->        ]
-SEPARATOR      ->        {
-IDENTIFIER     ->        return
-SEPARATOR      ->        (
-IDENTIFIER     ->        areaofcircle
-SEPARATOR      ->        (
-IDENTIFIER     ->        diameter
-OPERATOR       ->        /
-NUMBER         ->        2
-SEPARATOR      ->        )
-SEPARATOR      ->        )
-SEPARATOR      ->        ;
-SEPARATOR      ->        }
-KEYWORD        ->        int
-IDENTIFIER     ->        choose$
-SEPARATOR      ->        ;
-IDENTIFIER     ->        choose$
-OPERATOR       ->        =
-NUMBER         ->        0
-SEPARATOR      ->        ;
-KEYWORD        ->        float
-IDENTIFIER     ->        radius
-SEPARATOR      ->        ,
-IDENTIFIER     ->        diameter
-SEPARATOR      ->        ,
-IDENTIFIER     ->        area$
-SEPARATOR      ->        ;
-KEYWORD        ->        if
-SEPARATOR      ->        (
-IDENTIFIER     ->        choose$
-OPERATOR       ->        =
-NUMBER         ->        1
-SEPARATOR      ->        )
-SEPARATOR      ->        {
-IDENTIFIER     ->        put
-SEPARATOR      ->        (
-IDENTIFIER     ->        areaofcircle$
-SEPARATOR      ->        (
-IDENTIFIER     ->        radius
-SEPARATOR      ->        )
-SEPARATOR      ->        )
-SEPARATOR      ->        ;
-SEPARATOR      ->        }
-KEYWORD        ->        else
-SEPARATOR      ->        {
-KEYWORD        ->        if
-SEPARATOR      ->        (
-IDENTIFIER     ->        choose$
-OPERATOR       ->        =
-NUMBER         ->        2
-SEPARATOR      ->        )
-SEPARATOR      ->        {
-IDENTIFIER     ->        put
-SEPARATOR      ->        (
-IDENTIFIER     ->        areawithdiameter
-SEPARATOR      ->        (
-IDENTIFIER     ->        diameter
-SEPARATOR      ->        )
-SEPARATOR      ->        )
-SEPARATOR      ->        ;
-SEPARATOR      ->        }
-SEPARATOR      ->        }
+IDENTIFIER               x
+OPERATOR                 =
+IDENTIFIER               a
+OPERATOR                 +
+IDENTIFIER               b
+SEPARATOR                ;
+IDENTIFIER               z
+OPERATOR                 =
+IDENTIFIER               c
+OPERATOR                 +
+IDENTIFIER               d
+SEPARATOR                ;
+IDENTIFIER               a
+OPERATOR                 =
+IDENTIFIER               e
+OPERATOR                 -
+IDENTIFIER               f
+SEPARATOR                ;
+IDENTIFIER               b
+OPERATOR                 =
+IDENTIFIER               g
+OPERATOR                 *
+IDENTIFIER               n
+SEPARATOR                ;
+ERROR: syntax error found in the source code

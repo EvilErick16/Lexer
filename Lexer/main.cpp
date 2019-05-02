@@ -6,16 +6,6 @@ using std::endl;
 using std::cerr;
 using std::cin;
 
-#include <fstream>
-using std::ifstream;
-using std::ofstream;
-
-#include <string>
-using std::string;
-
-#include <vector>
-using std::vector;
-
 #include <algorithm>
 using std::all_of;
 
@@ -24,7 +14,8 @@ using std::setw;
 using std::right;
 using std::left;
 
-#include "state_machine.cpp"
+#include "state_machine.h"
+#include "syntax.h"
 
 
 int main()
@@ -57,8 +48,7 @@ int main()
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	//	Iterate through the buffer looking for Tokens and their corresponding lexemes 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	vector<string> lexemes;
-	vector<string> tokens;
+	vector<tokens> token_lexeme;
 	StateMachine FSM;
 	int curr_state = 0;
 	int lexeme_start = 0;
@@ -99,10 +89,9 @@ int main()
 					// If the token is a whitespace, ignore it 
 					if (FSM.getTokenName(curr_state, lex) != "OTHER") {
 						// Add the found token and lexeme to their respective vectors
-						tokens.push_back(FSM.getTokenName(curr_state, lex));
-						lexemes.push_back(lex);
-						cout << left << setw(15) << tokens.back() <<
-							setw(10) << "->" << lexemes.back() << endl;
+						token_lexeme.push_back(tokens(FSM.getTokenName(curr_state, lex), lex));
+						cout << left << setw(15) << token_lexeme.back().token <<
+							setw(10) << " " << token_lexeme.back().lexeme << endl;
 					}
 				}				
 
@@ -117,14 +106,17 @@ int main()
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	ofstream out("output.txt");
 	out << "--------------------------------" << endl;
-	out << left << setw(15) << "TOKENS" << setw(10) << "" << "Lexemes" << endl;
+	out << left << setw(15) << "TOKENS" << setw(10) << " " << "Lexemes" << endl;
 	out << "--------------------------------" << endl << endl;
-	vector<string>::iterator tok;
-	vector<string>::iterator lex;
-	for (tok = tokens.begin(), lex = lexemes.begin(); tok != tokens.end(); tok++, lex++)
+	for (int i = 0; i < token_lexeme.size(); i++)
 	{
-		out << left << setw(15) << *tok <<
-			setw(10) << "->" << *lex << endl;
+		out << left << setw(15) << token_lexeme[i].token <<
+			setw(10) << " " << token_lexeme[i].lexeme << endl;
+	}
+
+	// Check if the syntax is accepted
+	if (!analyze_syntax(token_lexeme, 0, out)) {
+		out << "ERROR: syntax error found in the source code" << endl;
 	}
 	out.close();
 
