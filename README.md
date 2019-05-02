@@ -15,27 +15,26 @@ Lexical Analyzer using Finite State Machine concept
 
 # 2. How to use the program:
 
-	- Unzip 'syntax_analyzer.zip' and simply run 'Lexer.exe' OR
-		clone github repository and run visual studio solution. 
+	- Unzip 'syntax_analyzer.zip' and simply run 'Lexer.exe' OR clone github repository and run visual studio solution. 
+		
 	- Compiled .exe file runs in a wondows 10 environment 
-	- 'Lexer.exe' file must be in the same folder as the source code file
-	 	that is	being tested. ('test.txt' is included)
+	
+	- 'Lexer.exe' file must be in the same folder as the source code file that is being tested. ('test.txt' is included)
+		
 	- When prompt asks for file name, enter file extension 
 		file name: test.txt 		// works
 		file name: test 		// does not work 
+		
 	- Output created and stored in 'output.txt'
 
 # 3. Design of program:
 
-	state_machine.h - declares a finite state macine class that is used
-			 to break input file into tokens and lexemes
+	state_machine.h - declares a finite state macine class that is used to break input file into tokens and lexemes
 
-	syntax.h - defines functions that act as production rules for our grammar
-				then determines if grammar is valid
+	syntax.h - defines functions that act as production rules for our grammar then determines if grammar is valid
 
-	main.cpp - main function, gets input file, uses lexer to get tokens and 
-				lexemes, then uses syntax analyzer to determine if grammar
-				is accepted
+	main.cpp - main function, gets input file, uses lexer to get tokens and lexemes, 
+		   then uses syntax analyzer to determine if grammaris accepted
 
 # 4. Limitations:
 
