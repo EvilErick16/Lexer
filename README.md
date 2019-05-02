@@ -7,7 +7,7 @@ Lexical Analyzer using Finite State Machine concept
 	Syntax analyzer that inplements the assignment expression 
 
 	Input: a vector of token objects that contains tokens and lexemes
-		   already parsed 
+		already parsed 
 
 	Output: a file that contains three things; Tokens, Lexemes, and
 			Production Rules if grammar is accepted, or Error if grammar
@@ -21,14 +21,14 @@ Lexical Analyzer using Finite State Machine concept
 	- 'Lexer.exe' file must be in the same folder as the source code file
 	 	that is	being tested. ('test.txt' is included)
 	- When prompt asks for file name, enter file extension 
-		file name: test.txt 	// works
+		file name: test.txt 		// works
 		file name: test 		// does not work 
 	- Output created and stored in 'output.txt'
 
 # 3. Design of program:
 
 	state_machine.h - declares a finite state macine class that is used
-					to break input file into tokens and lexemes
+			 to break input file into tokens and lexemes
 
 	syntax.h - defines functions that act as production rules for our grammar
 				then determines if grammar is valid
