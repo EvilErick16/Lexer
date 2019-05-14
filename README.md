@@ -1,6 +1,7 @@
 # Erick Juarez
 
-Lexical Analyzer using Finite State Machine concept
+Lexical analyzer using finite state machine
+Syntax analyzer using preditive table and stack
 
 # 1. Problem Statement:
 	
@@ -41,9 +42,3 @@ Lexical Analyzer using Finite State Machine concept
 	it does not have support for cross platform.
 	Symbols not recognized by the lexer will be treated as whitespace
 	and ignored.
-
-
-# 5. Shortcomings: 
-
-	When grammar is accepted, the output file does not print all 
-	the production rules used correctly. 
