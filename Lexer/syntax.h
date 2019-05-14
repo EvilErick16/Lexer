@@ -7,7 +7,16 @@ using std::string;
 #include <fstream>
 using std::ofstream;
 using std::ifstream;
-
+#include <assert.h>
+#include <iomanip>
+using std::setw;
+using std::right;
+using std::left;
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::cerr;
+using std::cin;
 
 
 // Define token structure. This holds tokens and lexemes
@@ -20,136 +29,211 @@ struct tokens {
 };
 
 // function prototypes 
-bool S(vector<tokens>, int, ofstream&);
-bool E(vector<tokens>, int, ofstream&);
-bool Q(vector<tokens>, int, ofstream&);
-bool T(vector<tokens>, int, ofstream&);
-bool R(vector<tokens>, int, ofstream&);
-bool F(vector<tokens>, int, ofstream&);
-bool analyze_syntax(vector<tokens>, int, ofstream&);
+bool analyze_syntax(vector<tokens>&, ofstream&);
+int string_to_index(string);
+void print_rule(string, string, ofstream&);
 
-// Function is a production rule that checks for assignment operation 
-bool S(vector<tokens> token_vect, int index, ofstream& output_file) {
+// Function uses a predictive table to analyze syntax
+bool analyze_syntax(vector<tokens>& token_vect, ofstream& output_file) {
 
-	if (token_vect[index].token == "IDENTIFIER") {
-		if (token_vect.size() > index + 1 && token_vect[index + 1].lexeme == "=") {
-			output_file << " <statement> -> <assign>\n <assign> -> <identifier>";
-			if (E(token_vect, index + 2, output_file)) {
-				output_file << " <expression>\n";
-				return true;
+	vector<vector<string>> predictive_table = {
+	//			i    =     +     -      *     /      (       )      $ 
+	/*S*/	{ "i=E", "", ""   , ""   , ""   , ""   , ""   , ""   , "" },
+	/*E*/	{ "TQ" , "", ""   , ""   , ""   , ""   , "TQ" , ""   , "" },
+	/*Q*/	{ ""   , "", "+TQ", "-TQ", ""   , ""   , ""   , "e"  , "e" },
+	/*R*/	{ "FR" , "", ""   , ""   , ""   , ""   , "FR" , ""   , "" },
+	/*T*/	{ ""   , "", "e"  , "e"  , "*FR", "/FR", ""   , "e"  , "e" },
+	/*F*/	{ "i"  , "", ""   , ""   , ""   , ""   , "(E)", ""   , "" }
+	};
+	vector<string> stack;
+	vector<tokens> line;
+
+	for (vector<tokens>::iterator it = token_vect.begin();  it != token_vect.end(); it++)
+	{
+		if (it->lexeme != ";")
+		{
+			line.push_back(tokens(it->token, it->lexeme));
+		}
+		else 
+		{
+			stack.push_back("$");
+			line.push_back(tokens("$", "$"));
+			stack.push_back("S");
+			vector<tokens>::iterator current = line.begin();
+			string top_of_stack;
+			string token;
+
+			cout << endl << "------------------------------------------" << endl;
+			output_file << endl << "------------------------------------------" << endl;
+			cout << "Token: " << left << setw(25) << current->token <<
+				"Lexeme: " << current->lexeme << endl;
+			output_file << "Token: " << left << setw(25) << current->token <<
+				"Lexeme: " << current->lexeme << endl;
+
+			while (!stack.empty())
+			{
+				top_of_stack = stack.back();
+				if (current->token == "IDENTIFIER") { token = "i"; }
+				else { token = current->lexeme; }
+
+				if (top_of_stack == "i" || top_of_stack == "=" || top_of_stack == "+" ||
+					top_of_stack == "-" || top_of_stack == "*" || top_of_stack == "/" ||
+					top_of_stack == "(" || top_of_stack == ")" || top_of_stack == "$")
+				{
+					if (top_of_stack == token)
+					{
+						stack.pop_back();
+						current++;
+						if ((!stack.empty()) && current->lexeme != "$")
+						{
+							cout << endl << "------------------------------------------" << endl;
+							output_file << endl << "------------------------------------------" << endl;
+							cout << "Token: " << left << setw(25) << current->token <<
+								"Lexeme: " << current->lexeme << endl;
+							output_file << "Token: " << left << setw(25) << current->token <<
+								"Lexeme: " << current->lexeme << endl;
+						}
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					assert(string_to_index(top_of_stack) != -1);
+					assert(string_to_index(token) != -1);
+					string prod_rule = predictive_table[string_to_index(top_of_stack)][string_to_index(token)];
+					if (!prod_rule.empty())
+					{
+						print_rule(top_of_stack, prod_rule, output_file);
+						stack.pop_back();
+						while (!prod_rule.empty())
+						{
+							if (prod_rule != "e") {
+								stack.push_back(string(1, prod_rule.back()));
+							}
+							prod_rule.pop_back();
+						}
+
+					}
+					else
+					{
+						return false;
+					}
+				}
 			}
+			cout << endl << "------------------------------------------" << endl;
+			cout << "Token: " << left << setw(25) << it->token <<
+				"Lexeme: " << it->lexeme << endl;
+			cout << "<Empty> -> <Epsilon>" << endl;
+			output_file << endl << "------------------------------------------" << endl;
+			output_file << "Token: " << left << setw(25) << it->token <<
+				"Lexeme: " << it->lexeme << endl;
+			output_file << "<Empty> -> <Epsilon>" << endl;
+			
+			line.clear();
 		}
 	}
-	return false;
+	return true;
 }
 
-// Second production rule 
-bool E(vector<tokens> token_vect, int index, ofstream& output_file) {
-	if (T(token_vect, index, output_file)) {
-		output_file << "<expression> -> <term>";
-		if (Q(token_vect, index + 1, output_file)) {
-			output_file << "<expression_prime>\n";
-			return true;
-		}
-	}
-	return false;
+
+
+
+int string_to_index(string word)
+{
+	if (word == "S" || word == "i") { return 0; }
+	else if (word == "E" || word == "=") { return 1; }
+	else if (word == "Q" || word == "+") { return 2; }
+	else if (word == "T" || word == "-") { return 3; }
+	else if (word == "R" || word == "*") { return 4; }
+	else if (word == "F" || word == "/") { return 5; }
+	else if (word == "(") { return 6; }
+	else if (word == ")") { return 7; }
+	else if (word == "$") { return 8; }
+	else return -1;
 }
 
-// Third production rule 
-bool Q(vector<tokens> token_vect, int index, ofstream& output_file) {
-	if (token_vect[index].lexeme == "+") {
-		output_file << "+";
-		if (index + 1 < token_vect.size() && T(token_vect, index + 1, output_file)) {
-			output_file << "<term>";
-			if (index + 2 < token_vect.size() && Q(token_vect, index + 2, output_file)) {
-				output_file << "<expression prime>";
-				return true;
-			}
+// Functon prints the production rules used to standard output and the output file 
+void print_rule(string statement, string prod_rule, ofstream& output_file)
+{
+	if (statement == "S")
+	{
+		if (prod_rule == "i=E")
+		{
+			cout << "<Statement> -> Identifier = <Expression>" << endl;
+			output_file << "<Statement> -> Identifier = <Expression>" << endl;
 		}
 	}
-	else if (token_vect[index].lexeme == "-") {
-		output_file << "-";
-		if (index + 1 < token_vect.size() && T(token_vect, index + 1, output_file)) {
-			output_file << "<term>";
-			if (index + 2 < token_vect.size() && Q(token_vect, index + 2, output_file)) {
-				output_file << "<expression prime>";
-				return true;
-			}
-		}
-	}
-	else {
-		if (index == token_vect.size() - 1) {
-			output_file << "epsilon\n";
-			return true;
-		}
-	}
-	return false;
-}
 
-// Fourth production rule 
-bool T(vector<tokens> token_vect, int index, ofstream& output_file) {
-	if (F(token_vect, index, output_file)) {
-		if (index + 1 < token_vect.size() && R(token_vect, index + 1, output_file)) {
-			output_file << "<term> -> <factor> <term prime>\n";
-			return true;
+	else if (statement == "E")
+	{
+		if (prod_rule == "TQ")
+		{
+			cout << "<Expression> -> <Term> <Expression Prime>" << endl;
+			output_file << "<Expression> -> <Term> <Expression Prime>" << endl;
 		}
 	}
-	return false;
-}
 
-// Fifth production rule 
-bool R(vector<tokens> token_vec, int index, ofstream& output_file) {
-	if (token_vec[index].lexeme == "*") {
-		output_file << "*";
-		if (index + 1 < token_vec.size() && F(token_vec, index + 1, output_file)) {
-			output_file << "<factor>";
-			if (index + 2 < token_vec.size() && R(token_vec, index + 2, output_file)) {
-				output_file << "<term prime>\n";
-				return true;
-			}
+	else if (statement == "Q")
+	{
+		if (prod_rule == "+TQ")
+		{
+			cout << "<Expression Prime> -> + <Term> <Expression Prime>" << endl;
+			output_file << "<Expression Prime> -> + <Term> <Expression Prime>" << endl;
+		}
+		else if (prod_rule == "-TQ")
+		{
+			cout << "<Expression Prime> -> - <Term> <Expression Prime>" << endl;
+			output_file << "<Expression Prime> -> - <Term> <Expression Prime>" << endl;
+		}
+		if (prod_rule == "e")
+		{
+			cout << "<Expression Prime> -> <Epsilon>" << endl;
+			output_file << "<Expression Prime> -> <Epsilon>" << endl;
 		}
 	}
-	else if (token_vec[index].lexeme == "/") {
-		if (index + 1 < token_vec.size() && F(token_vec, index + 1, output_file)) {
-			output_file << "<factor>";
-			if (index + 2 < token_vec.size() && R(token_vec, index + 2, output_file)) {
-				output_file << "<term prime>\n";
-				return true;
-			}
-		}
-	}
-	else if (index + 1 == token_vec.size()) {
-		output_file << "epsilon\n";
-		return true;
-	}
-	else {
-		return false;
-	}
-}
 
-// Sixth production rule
-bool F(vector<tokens> token_vec, int index, ofstream& output_file) {
-	if (token_vec[index].lexeme == "(") {
-		if (index + 1 < token_vec.size() && E(token_vec, index + 1, output_file)) {
-			if (index + 2 < token_vec.size() && E(token_vec, index + 2, output_file)) {
-				output_file << "( <expression> )\n";
-				return true;
-			}
+	else if (statement == "T")
+	{
+		if (prod_rule == "FR")
+		{
+			cout << "<Term> -> <Factor> <Term Prime>" << endl;
+			output_file << "<Term> -> <Factor> <Term Prime>" << endl;
 		}
 	}
-	else if (token_vec[index].token == "IDENTIFIER") {
-		output_file << "<identifier>\n";
-		return true;
-	}
-	return false;
-}
 
-// function that calls other functions to analyze the syntax
-bool analyze_syntax(vector<tokens> token_vect, int index, ofstream& output_file) {
-	return S(token_vect, index, output_file)
-		|| E(token_vect, index, output_file)
-		|| Q(token_vect, index, output_file)
-		|| T(token_vect, index, output_file)
-		|| R(token_vect, index, output_file)
-		|| F(token_vect, index, output_file);
+	else if (statement == "R")
+	{
+		if (prod_rule == "*FR")
+		{
+			cout << "<Term Prime> -> * <Factor> <Term Prime>" << endl;
+			output_file << "<Term Prime> -> * <Factor> <Term Prime>" << endl;
+		}
+		else if (prod_rule == "/FR")
+		{
+			cout << "<Term Prime> -> / <Factor> <Term Prime>" << endl;
+			output_file << "<Term Prime> -> / <Factor> <Term Prime>" << endl;
+		}
+		else if (prod_rule == "e")
+		{
+			cout << "<Term Prime> -> <Epsilon>" << endl;
+			output_file << "<Term Prime> -> <Epsilon>" << endl;
+		}
+	}
+
+	else if (statement == "F")
+	{
+		if (prod_rule == "i")
+		{
+			cout << "<Factor> -> Identifier" << endl;
+			output_file << "<Factor> -> Identifier" << endl;
+		}
+		else if (prod_rule == "(E)")
+		{
+			cout << "<Factor> -> ( <Expression> )" << endl;
+			output_file << "<Factor> -> ( <Expression> )" << endl;
+		}
+	}
 }

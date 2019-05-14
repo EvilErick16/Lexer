@@ -1,18 +1,7 @@
 // File containing main funcion
 
-#include <iostream>
-using std::cout;
-using std::endl;
-using std::cerr;
-using std::cin;
-
 #include <algorithm>
 using std::all_of;
-
-#include <iomanip>
-using std::setw;
-using std::right;
-using std::left;
 
 #include "state_machine.h"
 #include "syntax.h"
@@ -55,9 +44,9 @@ int main()
 	int curr_state = 0;
 	int lexeme_start = 0;
 
-	cout << "--------------------------------" << endl;
-	cout << left << setw(15) << "TOKENS" << setw(10) << "" << "Lexemes" << endl;
-	cout << "--------------------------------" << endl << endl;
+	/*cout << "--------------------------------" << endl;
+	cout << left << setw(25) << "TOKENS" << "Lexemes" << endl;
+	cout << "--------------------------------" << endl << endl;*/
 
 	// Iterate through every character in the codeArray vector 
 	for (int line = 0; line < codeArray.size(); line++) {
@@ -107,19 +96,19 @@ int main()
 	// Output Tokens and Lexemes to a file
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	ofstream out("output.txt");
-	out << "--------------------------------" << endl;
-	out << left << setw(15) << "TOKENS" << setw(10) << " " << "Lexemes" << endl;
-	out << "--------------------------------" << endl << endl;
-	for (int i = 0; i < token_lexeme.size(); i++)
-	{
-		out << left << setw(15) << token_lexeme[i].token <<
-			setw(10) << " " << token_lexeme[i].lexeme << endl;
-		cout << left << setw(15) << token_lexeme[i].token <<
-			setw(10) << " " << token_lexeme[i].lexeme << endl;
-	}
+	//out << "--------------------------------" << endl;
+	//out << left << setw(15) << "TOKENS" << setw(10) << " " << "Lexemes" << endl;
+	//out << "--------------------------------" << endl << endl;
+	//for (int i = 0; i < token_lexeme.size(); i++)
+	//{
+	//	out << left << setw(15) << token_lexeme[i].token <<
+	//		setw(10) << " " << token_lexeme[i].lexeme << endl;
+	//	cout << left << setw(15) << token_lexeme[i].token <<
+	//		setw(10) << " " << token_lexeme[i].lexeme << endl;
+	//}
 
 	// Check if the syntax is accepted
-	if (!analyze_syntax(token_lexeme, 0, out)) {
+	if (!analyze_syntax(token_lexeme, out)) {
 		cout << "Syntax error" << endl;
 		out << "ERROR: syntax error found in the source code" << endl;
 	}
