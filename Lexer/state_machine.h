@@ -2,6 +2,7 @@
 
 //This file defines the State Machine class 
 
+// Include libraries
 #include <fstream>
 using std::ifstream;
 #include <iostream>
